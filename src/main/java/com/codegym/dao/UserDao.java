@@ -88,8 +88,43 @@ public class UserDao implements IUserDao {
         try {
             PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM users WHERE id = ?");
             preparedStatement.setInt(1, id);
-            return preparedStatement.executeUpdate()>0;
+            return preparedStatement.executeUpdate() > 0;
 
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+
+    @Override
+    public User getUserById(int id) {
+        User user = null;
+//        String query = "{CALL get_user_by_id(?)}";
+        try {
+            CallableStatement callableStatement = connection.prepareCall("CALL get_user_by_id(?)");
+            callableStatement.setInt(1, id);
+            ResultSet rs = callableStatement.executeQuery();
+            String name = rs.getString("name");
+            String email = rs.getString("email");
+            String country = rs.getString("country");
+            user = new User(id, name, email, country);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return user;
+    }
+
+    @Override
+    public boolean insertUserStore(User user) {
+        String query = "{CALL insert_user(?,?,?)}";
+        try {
+            CallableStatement callableStatement = connection.prepareCall(query);
+            callableStatement.setString(1, user.getName());
+            callableStatement.setString(2, user.getEmail());
+            callableStatement.setString(3, user.getCountry());
+            return callableStatement.executeUpdate()>0;
         } catch (SQLException e) {
             e.printStackTrace();
         }

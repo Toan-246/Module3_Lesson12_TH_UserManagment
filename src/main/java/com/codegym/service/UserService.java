@@ -4,6 +4,7 @@ import com.codegym.dao.IGeneralDao;
 import com.codegym.dao.IUserDao;
 import com.codegym.model.User;
 
+import java.sql.SQLException;
 import java.util.List;
 
 public class UserService implements IUserService{
@@ -37,5 +38,15 @@ public class UserService implements IUserService{
     @Override
     public boolean deleteById(int id) {
         return userDao.deleteById(id);
+    }
+
+    @Override
+    public User getUserById(int id) {
+        return userDao.getUserById(id);
+    }
+
+    @Override
+    public boolean insertUserStore(User user) {
+        return userDao.insertUserStore(user);
     }
 }
